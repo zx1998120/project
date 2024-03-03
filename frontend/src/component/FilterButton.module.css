@@ -1,0 +1,21 @@
+.ascending{
+    transform: rotate(0deg);
+}
+.button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.descending {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease-out;
+    transform-origin: center;
+    width:fit-content
+}
+.icons {
+    margin : 0px 4px 0px 0px;
+    padding: 0px;
+    background-color: transparent;
+    font-size: 0.8em;
+}
