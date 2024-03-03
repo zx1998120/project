@@ -67,7 +67,7 @@ public class ClientSoftwareController {
 //            lockService.releaseLock(request.getFlightId());
         }
     }
-    @PostMapping("/api/getAirports")
+    @GetMapping("/api/getAirports")
     public ResponseEntity<?> getAirports() {
 
         // Step 1: Launch query
