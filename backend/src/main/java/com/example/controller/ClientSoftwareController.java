@@ -53,8 +53,9 @@ public class ClientSoftwareController {
                         Collections.sort(response, Comparator.comparing(Flight::getArriveDateTime));
                         break;
                     case "travelTime":
-                        Collections.sort(response, Comparator.comparing(Flight::getTravelTime));
+                        Collections.sort(response, Comparator.comparingLong(flight -> flight.getTravelTime(flight.getDepartDateTime(), flight.getArriveDateTime())));
                         break;
+
                     default:
                         return ResponseEntity.badRequest().body("Invalid sorting parameter");
                 }

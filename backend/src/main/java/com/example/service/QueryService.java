@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,8 +19,11 @@ public class QueryService {
     @Autowired
     private DataSource dataSource;
 
+
+
+
+
     public List<Flight> executeQuery(SearchParameters params) {
-        // SQL query to retrieve data from delta and southwest tables based on departure place and arrival place
         String sqlQuery = "SELECT * FROM (" +
                 "    SELECT 'delta' AS airline, Id, DepartDateTime, ArriveDateTime, DepartAirport, ArriveAirport, FlightNumber FROM deltas " +
                 "    UNION ALL " +
@@ -31,36 +33,43 @@ public class QueryService {
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
-            // Set departure place and arrival place parameters
             preparedStatement.setString(1, params.getDepartAirport());
             preparedStatement.setString(2, params.getArriveAirport());
-//            preparedStatement.setString(3, params.getDepartAirport());
-//            preparedStatement.setString(4, params.getArriveAirport());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Flight> flights = new ArrayList<>();
                 while (resultSet.next()) {
-                    // Create Flight objects from the result set
                     Flight flight = new Flight();
                     flight.setId(resultSet.getInt("Id"));
                     flight.setFlightNumber(resultSet.getString("FlightNumber"));
                     flight.setDepartAirport(resultSet.getString("DepartAirport"));
                     flight.setArriveAirport(resultSet.getString("ArriveAirport"));
-                    flight.setDepartDateTime(resultSet.getDate("DepartDateTime"));
-                    flight.setArriveDateTime(resultSet.getDate("ArriveDateTime"));
+
+                    // Convert DepartDateTime and ArriveDateTime to formatted strings
+                    Timestamp departDateTime = resultSet.getTimestamp("DepartDateTime");
+                    Timestamp arriveDateTime = resultSet.getTimestamp("ArriveDateTime");
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String formattedDepartDateTime = formatter.format(departDateTime);
+                    String formattedArriveDateTime = formatter.format(arriveDateTime);
+
+                    flight.setDepartDateTime(formattedDepartDateTime);
+                    flight.setArriveDateTime(formattedArriveDateTime);
 
                     // Set other properties as needed based on your table schema
 
                     flights.add(flight);
                 }
-                System.out.println(flights.get(2));
-                return flights; // Return list of Flight objects
+                return flights;
             }
         } catch (SQLException e) {
             e.printStackTrace(); // Handle or log the exception appropriately
-            return null; // Return null or an empty list in case of error
+            return null;
         }
     }
+
+
+
+
 
 
     public List<String> executeQuery2() {

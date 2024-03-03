@@ -1,26 +1,20 @@
 package com.example.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Flight {
     private Integer id;
-    private Date departDateTime;
-    private Date arriveDateTime;
+    private String departDateTime;
+    private String arriveDateTime;
     private String departAirport;
     private String arriveAirport;
     private String flightNumber;
 
     public Flight() {
-        this.id = id;
-        this.departDateTime = departDateTime;
-        this.arriveDateTime = arriveDateTime;
-        this.departAirport = departAirport;
-        this.arriveAirport = arriveAirport;
-        this.flightNumber = flightNumber;
     }
 
     public Integer getId() {
@@ -31,19 +25,19 @@ public class Flight {
         this.id = id;
     }
 
-    public Date getDepartDateTime() {
+    public String getDepartDateTime() {
         return departDateTime;
     }
 
-    public void setDepartDateTime(Date departDateTime) {
+    public void setDepartDateTime(String departDateTime) {
         this.departDateTime = departDateTime;
     }
 
-    public Date getArriveDateTime() {
+    public String getArriveDateTime() {
         return arriveDateTime;
     }
 
-    public void setArriveDateTime(Date arriveDateTime) {
+    public void setArriveDateTime(String arriveDateTime) {
         this.arriveDateTime = arriveDateTime;
     }
 
@@ -71,8 +65,18 @@ public class Flight {
         this.flightNumber = flightNumber;
     }
 
-    public long getTravelTime() {
-        long diffInMilliseconds = Math.abs(arriveDateTime.getTime() - departDateTime.getTime());
-        return TimeUnit.MILLISECONDS.toMinutes(diffInMilliseconds); // Convert milliseconds to minutes
+    public long getTravelTime(String departDateTimeStr, String arriveDateTimeStr) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date departDateTime = formatter.parse(departDateTimeStr);
+            Date arriveDateTime = formatter.parse(arriveDateTimeStr);
+
+            long diffInMilliseconds = Math.abs(arriveDateTime.getTime() - departDateTime.getTime());
+            return TimeUnit.MILLISECONDS.toMinutes(diffInMilliseconds); // Convert milliseconds to minutes
+        } catch (ParseException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately
+            return -1; // Return a default value or handle the error condition
+        }
     }
+
 }
