@@ -1,7 +1,6 @@
 package com.example.service;// QueryService.java
 
 import com.example.data.Flight;
-import com.example.object.ApiResponse;
 import com.example.object.SearchParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class QueryService {
@@ -40,7 +41,7 @@ public class QueryService {
                 List<Flight> flights = new ArrayList<>();
                 while (resultSet.next()) {
                     // Create Flight objects from the result set
-                    Flight flight = new Flight(null,null,null,null,null,null);
+                    Flight flight = new Flight();
                     flight.setId(resultSet.getInt("Id"));
                     flight.setFlightNumber(resultSet.getString("FlightNumber"));
                     flight.setDepartAirport(resultSet.getString("DepartAirport"));
@@ -60,6 +61,39 @@ public class QueryService {
             return null; // Return null or an empty list in case of error
         }
     }
+
+
+    public List<String> executeQuery2() {
+        String sqlQuery = "(SELECT DepartAirport, ArriveAirport FROM deltas) " +
+                "UNION ALL " +
+                "(SELECT DepartAirport, ArriveAirport FROM southwests)";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                Set<String> airportSet = new HashSet<>(); // Use Set to ensure uniqueness
+                while (resultSet.next()) {
+                    String departAirport = resultSet.getString("DepartAirport");
+                    String arriveAirport = resultSet.getString("ArriveAirport");
+                    if (departAirport != null) {
+                        airportSet.add(departAirport);
+                    }
+                    if (arriveAirport != null) {
+                        airportSet.add(arriveAirport);
+                    }
+                }
+                return new ArrayList<>(airportSet); // Convert Set to List and return
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log the exception appropriately
+            return null;
+        }
+    }
+
+
+
+
 
 }
 

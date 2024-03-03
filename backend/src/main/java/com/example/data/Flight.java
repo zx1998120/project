@@ -1,5 +1,7 @@
 package com.example.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +14,7 @@ public class Flight {
     private String arriveAirport;
     private String flightNumber;
 
-    public Flight(Integer id, Date departDateTime, Date arriveDateTime, String departAirport, String arriveAirport, String flightNumber) {
+    public Flight() {
         this.id = id;
         this.departDateTime = departDateTime;
         this.arriveDateTime = arriveDateTime;
@@ -68,6 +70,7 @@ public class Flight {
     public void setFlightNumber(String flightNumber) {
         this.flightNumber = flightNumber;
     }
+
     public long getTravelTime() {
         long diffInMilliseconds = Math.abs(arriveDateTime.getTime() - departDateTime.getTime());
         return TimeUnit.MILLISECONDS.toMinutes(diffInMilliseconds); // Convert milliseconds to minutes

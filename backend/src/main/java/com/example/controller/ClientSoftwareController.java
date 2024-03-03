@@ -3,13 +3,11 @@ package com.example.controller;
 // ClientSoftwareController.java
 
 import com.example.data.Flight;
-import com.example.object.ApiResponse;
 import com.example.object.SearchParameters;
 import com.example.object.SearchRequest;
 import com.example.service.LockService;
 import com.example.service.QueryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +25,7 @@ public class ClientSoftwareController {
     @Autowired
     private QueryService queryService;
 
-    @PostMapping("/search")
+    @PostMapping("/api/getFlights")
     public ResponseEntity<?> search(@RequestBody SearchRequest request, @RequestParam(required = false) String sortBy) {
         // Step 1: Acquire lock
 //        boolean lockAcquired = lockService.acquireLock(request.getFlightId());
@@ -67,6 +65,14 @@ public class ClientSoftwareController {
             // Step 6: Release lock
 //            lockService.releaseLock(request.getFlightId());
         }
+    }
+    @PostMapping("/api/getAirports")
+    public ResponseEntity<?> getAirports() {
+
+        // Step 1: Launch query
+        List<String> response = queryService.executeQuery2();
+        return ResponseEntity.ok(response);
+
     }
 
     private SearchParameters generateSearchParameters(SearchRequest request) {
