@@ -3,11 +3,13 @@
     border-width: 1px;
     border-style: solid;
     border-color: transparent;
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     align-items: center;
+    grid-template-rows: auto;
+    grid-auto-rows: 1px auto;
     width: 90%;
-    padding: 2rem;
+    padding: 1rem 1rem 0.4rem 1rem;
 
     background: #fff;
     border-radius: 8px;
@@ -46,6 +48,11 @@
     margin: 7px;
 }
 
+.flightNumberHolder {
+    display:flex;
+    flex-direction: column;
+}
+
 .flight {
     font-size: 16px;
     width: 0px;
@@ -79,15 +86,13 @@
 
 .price {
     font-size: 30px;
-    flex-basis: 20%;
     text-align: center;
     color: #e8381b;
 }
 
 .bookButton {
-    flex-basis: 7%;
     aspect-ratio: 1 / 1;
-    height: auto;
+    height: 50%;
 }
 
 .fa-arrow-down {

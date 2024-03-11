@@ -14,12 +14,12 @@ export type SingleFlight = {
 }
 
 export type BackendFlightType = {
-    Id : number,
-    DepartDateTime : string,
-    ArriveDateTime : string,
-    DepartAirport : string,
-    ArriveAirport : string,
-    FlightNumber : string,
+    id : number,
+    departDateTime : string,
+    arriveDateTime : string,
+    departAirport : string,
+    arriveAirport : string,
+    flightNumber : string,
 }
 export function timeDiff(departTime : DateWithZone, arriveTime: DateWithZone) {
     const duration = moment.duration(arriveTime.time.diff(departTime.time))
@@ -27,13 +27,13 @@ export function timeDiff(departTime : DateWithZone, arriveTime: DateWithZone) {
 }
 
 export function convertJSON2Flight(json : BackendFlightType) : SingleFlight{
-    const departTime = new DateWithZone(json.DepartDateTime, "UTC")
-    const arriveTime = new DateWithZone(json.ArriveDateTime, "UTC")
+    const departTime = new DateWithZone(json.departDateTime, "UTC")
+    const arriveTime = new DateWithZone(json.arriveDateTime, "UTC")
     return {
-        id : json.Id,
-        flightNumber : json.FlightNumber,
-        departAirport : json.DepartAirport,
-        arriveAirport : json.ArriveAirport,
+        id : json.id,
+        flightNumber : json.flightNumber,
+        departAirport : json.departAirport,
+        arriveAirport : json.arriveAirport,
         departTime: departTime,
         arriveTime: arriveTime,
         price: 0,

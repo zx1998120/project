@@ -4,6 +4,7 @@ import {FilterOptionContextProvider} from "./store/FilterOptionContext.tsx";
 import SearchPage from "./page/SearchPage/SearchPage.tsx";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import {LocalizationProvider} from "@mui/x-date-pickers";
+
 function App() {
   return (
     <>
@@ -12,8 +13,7 @@ function App() {
                 <PrimarySearchAppBar/>
                 <SearchPage/>
             </FilterOptionContextProvider>
-        </LocalizationProvider>;
-
+        </LocalizationProvider>
     </>
   )
 }

@@ -1,5 +1,7 @@
 import moment from 'moment-timezone';
+import {immerable} from "immer";
 export class DateWithZone {
+    [immerable] = true
     utc : moment.Moment
     time : moment.Moment
     timezone : string

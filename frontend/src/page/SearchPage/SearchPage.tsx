@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ReactNode, useRef} from 'react';
+import {ReactNode} from 'react';
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -7,20 +7,22 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import AirportShuttleIcon from '@mui/icons-material/AirportShuttle';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import SendIcon from '@mui/icons-material/Send';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import {Box, Checkbox, FormControlLabel, FormGroup, Grid, Input, Slider, Typography} from "@mui/material";
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import {Checkbox, FormControlLabel, FormGroup, Grid} from "@mui/material";
 import FlightCard from "../../component/FlightCard.tsx";
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import {useSortingOpton, useTempFilterOptionUpdater} from "../../store/FilterOptionContext.tsx";
-import {FilterDebugPanel} from "../../component/FilterDebugPanel.tsx";
 import {SortingDirection, SortingType, StopOptionType} from "../../type/FilterOptionType.tsx";
 import {useLoaderData} from "react-router-dom";
 import {FlightPlan} from "../../type/FlightPlan.ts";
 import {FilterBar} from "./FilterBar.tsx";
+import {Moment} from "moment-timezone";
+import {DateWithZone} from "../../type/TimeZone.ts";
+import {FilterDebugPanel} from "../../component/FilterDebugPanel.tsx";
+import {BoundedValueSlider} from "../../component/BoundedValueSlider.tsx";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 type FoldableListItemProps = {
     icon : ReactNode,
@@ -47,131 +49,16 @@ export function FoldableListItem({icon, initialState, children, primary}: Foldab
     </>
 }
 
-type BoundedValueSlider = {
-    minValue: number,
-    maxValue: number
-}
-
-function inbound(i : number, minValue : number, maxValue : number) {
-    return i >= minValue && i <= maxValue
-}
 /*
 function clamp(i : number, minValue : number, maxValue : number){
     return Math.min(Math.max(i, minValue), Math.min(i, maxValue))
 }
 */
 
-export function BoundedValueSlider({minValue, maxValue}: BoundedValueSlider) {
-    const [value, setValue] = React.useState<number[]>([minValue, maxValue]);
-
-    const handleLowerInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.value !== '') {
-            const c = Number(event.target.value)
-            if (c >= minValue && c <= maxValue && c <= value[1]) {
-                setValue([c, value[1]])
-            }
-        }
-    };
-    const handleUpperInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.value !== '') {
-            const c = Number(event.target.value)
-            if (c >= minValue && c <= maxValue && c >= value[0]) {
-                setValue([value[0], c])
-            }
-        }
-    };
-    const maxRef = useRef<HTMLInputElement>()
-    const minRef = useRef<HTMLInputElement>()
-    const handleSliderChange = (_: Event, newValue: number | number[]) => {
-        const varray = newValue as number[]
-        setValue(varray)
-        const maxc = maxRef.current
-        const minc = minRef.current
-        if (maxc && minc) {
-            minc.value = varray[0].toString()
-            maxc.value = varray[1].toString()
-        }
-    };
-    const handleBlur = () => {
-        const maxc = maxRef.current
-        const minc = minRef.current
-        if (maxc && minc) {
-            let tmp_maxValue = parseInt(maxc.value)
-            let tmp_minValue = parseInt(minc.value)
-            if (!inbound(tmp_minValue, minValue, maxValue)) {
-                tmp_minValue = minValue
-            }
-            if (!inbound(tmp_maxValue, minValue, maxValue)) {
-                tmp_maxValue = maxValue
-            }
-            minc.value = tmp_minValue.toString()
-            maxc.value = tmp_maxValue.toString()
-            setValue([tmp_minValue, tmp_maxValue])
-        }
-    }
-
-    return (
-        <Box sx={{width: 250}}>
-            <Grid container spacing={0.5} alignItems="center">
-                <Typography>From</Typography>
-                <Grid item>
-                    <Input
-                        inputRef={minRef}
-                        defaultValue={minValue}
-                        size="small"
-                        onChange={handleLowerInputChange}
-                        onBlur={handleBlur}
-                        inputProps={{
-                            min: minValue,
-                            max: value[1],
-                            type: 'number',
-                            'aria-labelledby': 'input-slider',
-                            style: {textAlign: 'center'}
-                        }}
-                    />
-                </Grid>
-                <Typography>To</Typography>
-                <Grid item>
-                    <Input
-                        inputRef={maxRef}
-                        defaultValue={maxValue}
-                        size="small"
-                        onChange={handleUpperInputChange}
-                        onBlur={handleBlur}
-                        inputProps={{
-                            min: value[0],
-                            max: maxValue,
-                            type: 'number',
-                            'aria-labelledby': 'input-slider',
-                            style: {textAlign: 'center'}
-                        }}
-                    />
-                </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-                <Grid item>
-                    <AttachMoneyIcon/>
-                </Grid>
-                <Grid item xs>
-                    <Slider
-                        disableSwap
-                        min={minValue}
-                        max={maxValue}
-                        defaultValue={value}
-                        value={value}
-                        onChange={handleSliderChange}
-                        aria-labelledby="input-slider"
-                        valueLabelDisplay="auto"
-                    />
-                </Grid>
-            </Grid>
-        </Box>
-    );
-}
 
 function FlightList() {
     const sortingOption = useSortingOpton()
-    const data = useLoaderData() as FlightPlan[]
+    const data = (useLoaderData() as {data:FlightPlan[]}).data
     const sortedData = [...data].sort((e1, e2)=> {
         // todo : fix the comparison here,
         // currently we use the information from first flight to do the comparison
@@ -200,10 +87,6 @@ function FlightList() {
         }
         return cmp ? 1 : -1
     })
-    console.log(sortingOption)
-    console.log(sortedData.map((i)=>{
-        return i.flights[0].id
-    }))
     return <div style={{maxWidth:"900px", margin:"auto"}}>
         {
             sortedData.map((i, index) => {
@@ -220,11 +103,10 @@ export default function SearchPage() {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTempFilter((draft) => {
             draft.tempOption.setStopType(Number(event.target.value), event.target.checked)
-            console.log(draft)
         })
     }
     return (
-        <Grid container>
+        <Grid container sx={{flexWrap:"nowrap"}}>
             <Grid item sx={{
                 'padding': "0em 1rem",
                 'border': "1px solid #d9e2e8",
@@ -242,8 +124,18 @@ export default function SearchPage() {
                         </ListSubheader>
                     }
                 >
-                    <DatePicker label="Depart Date" sx={{marginBottom:"1em"}}/>
-                    <DatePicker label="Arrive Date" sx={{marginBottom:"1em"}}/>
+                    <DatePicker label="Depart Date"
+                                sx={{marginBottom:"1em"}} onChange={(v)=>setTempFilter(draft => {
+                        const m = v as Moment
+                        const s = m.utc().format()
+                        draft.tempOption.departDate = new DateWithZone(s, "UTC")
+                    })} />
+                    <DatePicker label="Arrive Date" sx={{marginBottom:"1EM"}}
+                                onChange={(v)=>setTempFilter(draft => {
+                        const m = v as Moment
+                        const s = m.utc().format()
+                        draft.tempOption.arriveDate = new DateWithZone(s, "UTC")
+                    })} />
                     <FoldableListItem icon={<AirportShuttleIcon/>} primary="Stops" initialState={false}>
                         <FormGroup>
                             <FormControlLabel control={<Checkbox onChange={handleChange} defaultChecked value={StopOptionType.NonStop}/>}  label="Nonstop"/>
@@ -252,22 +144,28 @@ export default function SearchPage() {
                         </FormGroup>
                     </FoldableListItem>
                     <FoldableListItem icon={<MonetizationOnIcon/>}  primary="Price" initialState={false}>
-                        <BoundedValueSlider minValue={100} maxValue={200}/>
+                        <BoundedValueSlider minValue={100} maxValue={200} onRangeChange={(minValue, maxValue)=>{
+                            setTempFilter((draft)=>{
+                                draft.tempOption.priceRange.minValue = minValue
+                                draft.tempOption.priceRange.maxValue = maxValue
+                            })
+                        }}/>
                     </FoldableListItem>
-                    <ListItemButton disableGutters={true}>
-                        <ListItemIcon>
-                            <SendIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="Sent mail"/>
-                    </ListItemButton>
+                    <FoldableListItem icon={<AccessTimeIcon/>}  primary="Duration" initialState={false}>
+                        <BoundedValueSlider minValue={100} maxValue={200} onRangeChange={(minValue, maxValue)=>{
+                            setTempFilter((draft)=>{
+                                draft.tempOption.durationRange.minValue = minValue
+                                draft.tempOption.durationRange.maxValue = maxValue
+                            })
+                        }}/>
+                    </FoldableListItem>
                 </List>
             </Grid>
-            <Grid item sx={{flexGrow: 1}}>
-                <FilterBar/>
+            <Grid item sx={{flex:"1 0 auto",maxWidth:"1200px", margin:"auto"}}>
                 <FilterDebugPanel/>
+                <FilterBar/>
                 <FlightList/>
             </Grid>
         </Grid>
-
     );
 }

@@ -15,11 +15,26 @@ import SelectLabels from "../../component/SelectLabels.tsx";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import {useTempFilterOption, useTempFilterOptionUpdater} from "../../store/FilterOptionContext.tsx";
+import {useQuery} from "@tanstack/react-query";
+import {getAirport} from "../../api/AirportAPI.ts";
+import {CircularProgress} from "@mui/material";
+import React from 'react';
+import {useSearchParams} from "react-router-dom";
 
 export default function PrimarySearchAppBar() {
     const menuId = 'primary-search-account-menu';
     const setTempFilter = useTempFilterOptionUpdater()
     const tempFilter = useTempFilterOption()
+    const [_, setSearchParams] = useSearchParams()
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['repoData'],
+        queryFn: async () => {
+            return await getAirport()
+        }
+    })
+    if (error != null) {
+        console.log(error)
+    }
     return (
         <AppBar position={"sticky"} style={{background: 'white', "padding": "0.5em"}}
                 elevation={1}>
@@ -42,10 +57,27 @@ export default function PrimarySearchAppBar() {
                 <SelectLabels/>
                 <Autocomplete
                     disablePortal
-                    options={["1","2"]}
+                    options={data ? data : []}
+                    loading={isLoading}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            size="medium"
+                            label="source"
+                            InputProps={{
+                                ...params.InputProps,
+                                endAdornment: (
+                                    <React.Fragment>
+                                        {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                        {params.InputProps.endAdornment}
+                                    </React.Fragment>
+                                ),
+                            }}
+                        />
+                    )}
                     value={tempFilter.origin}
                     sx={{width: "30%", maxWidth: 300}}
-                    renderInput={(params) => <TextField {...params} size="medium" label="source"/>}
+                    //renderInput={(params) => <TextField {...params} size="medium" label="source"/>}
                     onChange={(_: unknown, newValue: string | null)=>setTempFilter((draft)=>{
                         draft.tempOption.origin = newValue
                     })}
@@ -55,15 +87,35 @@ export default function PrimarySearchAppBar() {
                 </IconButton>
                 <Autocomplete
                     disablePortal
-                    options={["1","2"]}
+                    options={data ? data : []}
+                    loading={isLoading}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            size="medium"
+                            label="destination"
+                            InputProps={{
+                                ...params.InputProps,
+                                endAdornment: (
+                                    <React.Fragment>
+                                        {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                                        {params.InputProps.endAdornment}
+                                    </React.Fragment>
+                                ),
+                            }}
+                        />
+                    )}
                     sx={{width: "30%", maxWidth: 300}}
                     value={tempFilter.destination}
-                    renderInput={(params) => <TextField {...params} size="medium" label="destination"/>}
+                    //renderInput={(params) => <TextField {...params} size="medium" label="destination"/>}
                     onChange={(_: unknown, newValue: string | null)=>setTempFilter((draft)=>{
                         draft.tempOption.destination = newValue
                     })}
                 />
-                <IconButton>
+                <IconButton onClick={()=>{
+                    const params = tempFilter.serialize()
+                    setSearchParams(params)
+                }}>
                     <SearchIcon/>
                 </IconButton>
                 <Box sx={{flexGrow: 1}}/>
