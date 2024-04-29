@@ -4,7 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import {enableMapSet} from 'immer'
 import {
-    createBrowserRouter,
+    createBrowserRouter, Outlet,
     RouterProvider,
 } from "react-router-dom";
 import LoginPage from "./page/Login/LoginPage.tsx";
@@ -15,34 +15,49 @@ import {
 } from '@tanstack/react-query'
 import {Switch} from "@mui/material";
 import {searchFlightQueryLoader_test} from "./api/TestQueryClient.ts";
+import AuthProvider from "./store/AuthContext.tsx";
 // require to set map
 enableMapSet()
+
+function Layout() {
+    return (
+        <>
+            <AuthProvider>
+                <Outlet/>
+            </AuthProvider>
+        </>
+    );
+}
 
 function Toplevel() {
     const [isTesting, setIsTesting] = useState(true)
     const queryClient = new QueryClient()
-    const router = createBrowserRouter([
-        {
-            path: "/",
-            element: <App />,
-            loader : isTesting ?  searchFlightQueryLoader_test : searchFlightQueryLoader
-        },
-        {
-            path: "/login",
-            element: <LoginPage/>,
-        },
-    ]);
+    const router = createBrowserRouter([{
+        element: <Layout/>,
+        children: [
+            {
+                path: "/",
+                element: <App/>,
+                loader: isTesting ? searchFlightQueryLoader_test : searchFlightQueryLoader
+            },
+            {
+                path: "/login",
+                element: <LoginPage/>,
+            },
+        ]
+    }]);
 
     return <>
-        <Switch   checked={isTesting}
-                  onChange={()=>setIsTesting(!isTesting)} />
-        <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
-        </QueryClientProvider>
+        <Switch checked={isTesting}
+                onChange={() => setIsTesting(!isTesting)}/>
+            <QueryClientProvider client={queryClient}>
+                <RouterProvider router={router}/>
+            </QueryClientProvider>
     </>
 }
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-      <Toplevel/>
-  </React.StrictMode>,
+    <React.StrictMode>
+        <Toplevel/>
+    </React.StrictMode>,
 )

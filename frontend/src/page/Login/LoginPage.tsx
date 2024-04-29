@@ -14,6 +14,8 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import TopAppBar from "../../component/TopAppBar.tsx";
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
+import {useAuth} from "../../store/AuthContext.tsx";
+import {useNavigate} from "react-router-dom";
 function Copyright(props: TypographyProps) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -31,13 +33,19 @@ function Copyright(props: TypographyProps) {
 const defaultTheme = createTheme();
 
 export default function LoginPage() {
+    const autoInfo = useAuth()
+    const navigate = useNavigate()
+    if (autoInfo?.token.length != 0) {
+        navigate("/")
+    }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        autoInfo?.loginAction({
+                email: data.get('email'),
+                password: data.get('password'),
+            }
+        )
     };
 
     return (

@@ -19,13 +19,16 @@ import {useQuery} from "@tanstack/react-query";
 import {getAirport} from "../../api/AirportAPI.ts";
 import {CircularProgress} from "@mui/material";
 import React from 'react';
-import {useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {useAuth} from "../../store/AuthContext.tsx";
 
 export default function PrimarySearchAppBar() {
     const menuId = 'primary-search-account-menu';
     const setTempFilter = useTempFilterOptionUpdater()
     const tempFilter = useTempFilterOption()
     const [_, setSearchParams] = useSearchParams()
+    const autoInfo = useAuth()
+    const navigate = useNavigate()
     const { isLoading, error, data } = useQuery({
         queryKey: ['repoData'],
         queryFn: async () => {
@@ -139,6 +142,11 @@ export default function PrimarySearchAppBar() {
                         aria-label="account of current user"
                         aria-controls={menuId}
                         aria-haspopup="true"
+                        onClick={()=>{
+                            if (autoInfo?.token.length == 0) {
+                                navigate("/login")
+                            }
+                        }}
                     >
                         <AccountCircle/>
                     </IconButton>

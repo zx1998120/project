@@ -43,5 +43,6 @@
 .singlePrice {
     font-size: 24px;
     text-align: center;
-    color: #e8381b;
+    /*color: #e8381b;*/
+    color : transparent;
 }

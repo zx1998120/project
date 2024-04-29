@@ -65,14 +65,22 @@ export default function FlightCard({plan}: { plan: FlightPlan }) {
                 </div>
             </div>
             <span className={`${styles.price} ${styles.bold}`}>${price}</span>
-            <button className={styles.bookButton}>Book</button>
-            <div className={single_styles.divider}></div>
+            <button className={styles.bookButton} onClick={()=>{
+                const books : number[][] = localStorage.books == null ? [] : (JSON.parse(localStorage.books) as number[][])
+                books.push(plan.flights.map((flight)=>{
+                    return flight.id
+                }))
+                console.log(books)
+                localStorage.books = JSON.stringify(books)
+            }}>Book</button>
+            {plan.flights.length > 1 && (<><div className={single_styles.divider}></div>
             {
+
                 plan.flights.map((value, index) => {
                     return <SingleFlightCard key={index} flight={value}/>
                 })
             }
-            <div ></div>
+            <div ></div></>)}
         </div>
 
     );
