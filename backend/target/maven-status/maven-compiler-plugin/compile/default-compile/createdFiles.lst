@@ -1,10 +1,12 @@
 com/example/object/ApiResponse.class
-com/example/object/SearchParameters.class
 com/example/service/LockService.class
+com/example/data/ReservationResponse.class
+com/example/data/FlightLeg.class
+com/example/data/SingleFlight.class
+com/example/object/SearchParameters.class
 com/example/object/SearchRequest.class
 com/example/data/Flight.class
 com/example/controller/ClientSoftwareController.class
 com/example/service/QueryService.class
-com/example/FlightApplication$1.class
 com/example/service/TestQueryService.class
 com/example/FlightApplication.class

@@ -1,9 +1,13 @@
 /home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/controller/ClientSoftwareController.java
 /home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/object/SearchRequest.java
+/home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/builder/FlightQueryBuilder.java
+/home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/data/SingleFlight.java
+/home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/data/ReservationResponse.java
+/home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/service/QueryService.java
+/home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/data/FlightLeg.java
 /home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/object/SearchParameters.java
 /home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/service/TestQueryService.java
 /home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/data/Flight.java
 /home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/service/LockService.java
-/home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/service/QueryService.java
 /home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/object/ApiResponse.java
 /home/chenningcong/Desktop/DesignOfSDE/project/backend/src/main/java/com/example/FlightApplication.java

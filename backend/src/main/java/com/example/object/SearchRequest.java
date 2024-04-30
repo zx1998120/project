@@ -1,11 +1,38 @@
 package com.example.object;
 
+import java.util.List;
+
 public class SearchRequest {
 
-//    private String flightId;
+    private List<String> id;
     private String departAirport;
     private String arriveAirport;
 
+    private String flightNumber;
+
+    public SearchRequest(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public SearchRequest() {
+
+    }
+
+    public List<String> getId() {
+        return id;
+    }
+
+    public void setId(List<String> id) {
+        this.id = id;
+    }
+
+    public String getFlightNumber() {
+        return flightNumber;
+    }
+
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
     // Add other request parameters here
 
     // Getters and setters
@@ -17,12 +44,12 @@ public class SearchRequest {
         this.arriveAirport = arriveAirport;
     }
 
-//    public String getFlightId() {
-//        return flightId;
+//    public String getId() {
+//        return id;
 //    }
 //
-//    public void setFlightId(String flightId) {
-//        this.flightId = flightId;
+//    public void setId(String id) {
+//        this.id = id;
 //    }
 
     public String getDepartAirport() {

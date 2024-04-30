@@ -13,8 +13,26 @@ public class Flight {
     private String departAirport;
     private String arriveAirport;
     private String flightNumber;
+    private String duration;
 
-    public Flight() {
+//    private String duration;
+
+    public Flight(Integer id, String departDateTime, String arriveDateTime, String departAirport, String arriveAirport, String flightNumber, String duration) {
+        this.id = id;
+        this.departDateTime = departDateTime;
+        this.arriveDateTime = arriveDateTime;
+        this.departAirport = departAirport;
+        this.arriveAirport = arriveAirport;
+        this.flightNumber = flightNumber;
+        this.duration = duration;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public Integer getId() {

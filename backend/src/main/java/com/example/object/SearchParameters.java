@@ -1,18 +1,31 @@
 package com.example.object;
 
+import java.util.List;
+
 public class SearchParameters {
     // Define search parameters here
-    private String flightId;
+    private List<String> id;
     private String departAirport;
     private String arriveAirport;
 
-    public String getFlightId() {
-        return flightId;
+    private String flightNumber;
+
+    public String getFlightNumber() {
+        return flightNumber;
     }
 
-    public void setFlightId(String flightId) {
-        this.flightId = flightId;
+    public void setFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
     }
+
+    public List<String> getId() {
+        return id;
+    }
+
+    public void setId(List<String> id) {
+        this.id = id;
+    }
+
 
     public String getDepartAirport() {
         return departAirport;
