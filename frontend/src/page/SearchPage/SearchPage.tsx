@@ -162,9 +162,9 @@ export default function SearchPage() {
                 </List>
             </Grid>
             <Grid item sx={{flex:"1 0 auto",maxWidth:"1200px", margin:"auto"}}>
-                <FilterDebugPanel/>
                 <FilterBar/>
                 <FlightList/>
+                <FilterDebugPanel/>
             </Grid>
         </Grid>
     );

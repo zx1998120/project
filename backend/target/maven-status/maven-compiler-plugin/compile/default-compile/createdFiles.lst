@@ -2,7 +2,9 @@ com/example/object/ApiResponse.class
 com/example/object/SearchParameters.class
 com/example/service/LockService.class
 com/example/object/SearchRequest.class
+com/example/data/Flight.class
 com/example/controller/ClientSoftwareController.class
 com/example/service/QueryService.class
+com/example/FlightApplication$1.class
 com/example/service/TestQueryService.class
-com/example/flight/FlightApplication.class
+com/example/FlightApplication.class
